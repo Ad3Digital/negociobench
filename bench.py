@@ -252,6 +252,7 @@ class Store:
         self.cancel = threading.Event()
         self.active = None
         self.token = secrets.token_urlsafe(32)
+        self.inference_lock = None
         self.runs = []
         self.load_runs()
 
@@ -310,13 +311,42 @@ class Store:
         with self.lock:
             if self.active:
                 raise ValueError("Já existe uma bateria em andamento")
-            available = list_models(config["endpoint"], config["runtime"])
-            if any(m not in available for m in config["models"]):
-                raise ValueError("Um modelo selecionado não está disponível como modelo local. Atualize a lista.")
+            self.acquire_inference()
+            try:
+                available = list_models(config["endpoint"], config["runtime"])
+                if any(m not in available for m in config["models"]):
+                    raise ValueError("Um modelo selecionado não está disponível como modelo local. Atualize a lista.")
+            except Exception:
+                self.release_inference()
+                raise
             self.cancel.clear()
             self.active = {"models": config["models"], "model": config["models"][0], "task": None, "completed": 0,
                            "total": len(config["models"]) * len(config["task_ids"]) * config["repeats"]}
             threading.Thread(target=self.execute, args=(config,), daemon=True).start()
+
+    def acquire_inference(self):
+        """One runner per workspace, including GUI and CLI processes; OS releases on exit."""
+        handle = (self.path.parent / "inference.lock").open("a+b")
+        try:
+            if os.name == "nt":
+                import msvcrt
+                if handle.seek(0, 2) == 0:
+                    handle.write(b"0")
+                    handle.flush()
+                handle.seek(0)
+                msvcrt.locking(handle.fileno(), msvcrt.LK_NBLCK, 1)
+            else:
+                import fcntl
+                fcntl.flock(handle, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        except OSError:
+            handle.close()
+            raise ValueError("Outra execução usa este workspace. Aguarde o painel ou a CLI terminar.") from None
+        self.inference_lock = handle
+
+    def release_inference(self):
+        if self.inference_lock is not None:
+            self.inference_lock.close()
+            self.inference_lock = None
 
     def execute(self, config):
         try:
@@ -347,7 +377,10 @@ class Store:
                             response = local_request(config["endpoint"], "/chat/completions", {
                                 "model": model, "messages": messages, "stream": False,
                                 "temperature": config["temperature"], "max_tokens": config["max_tokens"]}, config["timeout"])
-                            raw = response["choices"][0]["message"].get("content")
+                            message = response["choices"][0]["message"]
+                            if not isinstance(message, dict):
+                                raise ValueError("Mensagem do servidor fora do formato esperado")
+                            raw = message.get("content")
                             if not isinstance(raw, str):
                                 raise ValueError("O servidor não retornou conteúdo textual")
                             row["raw"] = raw
@@ -378,6 +411,7 @@ class Store:
                     self.save(run)
         finally:
             with self.lock:
+                self.release_inference()
                 self.active = None
 
     def review(self, data):

@@ -12,3 +12,5 @@ Contribuições de casos, interface e correções são bem-vindas sob a licença
 Para compartilhar resultados, inclua versão, protocolo, hardware, runtime, modelo/quantização, parâmetros, repetições e erros. Não envie `.local/` inteiro. Os relatórios podem conter documentos privados.
 
 O projeto usa a biblioteca padrão do Python e HTML/CSS/JavaScript nativos. Prefira alterações simples, acessíveis e reproduzíveis.
+
+O repositório também é uma interface para agentes de IA. Mantenha `AGENTS.md`, `docs/AGENTES.md` e os comandos de `agent.py` alinhados ao comportamento real. Preserve a saída JSON e reutilize o motor do painel em vez de duplicar a avaliação.

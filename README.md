@@ -4,6 +4,18 @@
 
 Um laboratório open source, em português, para testar modelos locais em tarefas de negócios, conferir respostas e criar suas próprias baterias. Roda no seu computador, com Python e navegador, sem dependências de terceiros ou APIs pagas.
 
+## Comece entregando o repositório à sua IA
+
+**O NegócioBench foi preparado para ser operado por agentes de IA com acesso ao terminal.** A IA lê as instruções, diagnostica o ambiente, ajuda a criar os testes e executa a bateria. Você acompanha as evidências no painel.
+
+Cole este pedido no agente que você usa:
+
+> Use https://github.com/Ad3Digital/negociobench para descobrir quais IAs locais funcionam no meu PC e no meu negócio. Leia o AGENTS.md e conduza o processo. Confira o ambiente e os modelos já instalados, me ajude a criar uma bateria pequena com fatos do meu negócio, valide os testes e rode uma primeira comparação local. Pergunte somente o que faltar. Antes de instalar programas ou baixar modelos, explique o necessário. Não use APIs pagas nem publique meus dados. Ao terminar, abra o painel e explique os resultados e as limitações.
+
+**Para a IA:** comece pelo [AGENTS.md](AGENTS.md) e pelo [guia de operação por agentes](docs/AGENTES.md). A CLI `agent.py` oferece diagnóstico, descoberta de modelos, validação, execução e relatórios em JSON.
+
+Um chatbot sem acesso ao terminal pode preparar os testes e orientar você; a execução exige uma ferramenta com acesso ao computador. A operação manual também está explicada abaixo.
+
 ## De onde vem o projeto
 
 Sou Antonio, da AD3. Uso IA no meu negócio local e na minha agência de IA. É dessa rotina — atendimento, vendas, marketing e operação — que nasce o NegócioBench.
@@ -14,7 +26,7 @@ Os casos públicos usam dados fictícios inspirados nesses tipos de tarefa. Resu
 
 ![Interface do NegócioBench](docs/interface.png)
 
-## Começar
+## Instalação e uso manual
 
 Requisitos: **Python 3.10+**, navegador atualizado e, para inferência, um servidor local compatível com Chat Completions. Não é necessário instalar pacotes Python.
 
@@ -53,6 +65,7 @@ Fontes do protocolo: [Ollama](https://docs.ollama.com/api/openai-compatibility),
 - Comparação de critérios objetivos, tempo ponta a ponta, tokens informados pelo runtime e falhas.
 - Revisão humana de utilidade, clareza e fidelidade, mantida separada da nota automática.
 - Importação/exportação de baterias próprias e exportação de relatórios JSON.
+- Instruções para agentes e CLI com saída JSON para conduzir o processo pelo terminal.
 
 Não há ranking público pré-preenchido. Nenhum modelo foi avaliado para produzir números de marketing. Os resultados começam vazios.
 
