@@ -30,6 +30,8 @@ Não há cálculo automático de fidelidade semântica de cada frase às fontes.
 
 A recuperação é um baseline lexical. Não há vetor, reranking, query rewriting, chunking automático ou integração com bases externas. Baterias particulares devem verificar a cobertura de fontes com `--self-check`.
 
+Em particular, a v0.1 não se conecta a PostgreSQL/pgvector. Os resultados desta versão não avaliam busca vetorial nem o desempenho dessa infraestrutura. Consulte [RAG, PostgreSQL e pgvector](RAG-E-PGVECTOR.md) para entender a arquitetura e os limites de comparação.
+
 ## Tempo, tokens e hardware
 
 Tempo por caso é medido com relógio monotônico, do envio da requisição à leitura/avaliação da resposta. Inclui latência, eventual carregamento do modelo, prefill e geração. A mediana usa chamadas com resposta textual recebida, inclusive JSON inválido. Erros de infraestrutura ficam fora da mediana.

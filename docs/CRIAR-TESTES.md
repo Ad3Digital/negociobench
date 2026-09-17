@@ -22,6 +22,8 @@ Não comece com “avaliar tudo”. Escreva uma pergunta concreta: “o modelo r
 
 Essa busca é lexical, sem embeddings. Ela funciona como um baseline simples, reproduzível e sem downloads. Não avalia automaticamente seu banco vetorial, seu reranker ou sua aplicação de produção. Compare a cobertura das fontes recuperadas antes de culpar o modelo.
 
+Se o seu curso ou chatbot usa **PostgreSQL com pgvector**, veja [como essa arquitetura se relaciona com o benchmark](RAG-E-PGVECTOR.md). Você pode aproveitar os cenários e as regras do negócio; a integração com esse banco ainda não está implementada.
+
 ## 3. Monte uma base pequena e confiável
 
 Transforme políticas e páginas em trechos curtos, um assunto por documento. Cada trecho tem `id`, `title` e `text`. Use IDs com letras sem acento, números, hífen e sublinhado.

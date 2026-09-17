@@ -4,6 +4,14 @@
 
 Um laboratório open source, em português, para testar modelos locais em tarefas de negócios, conferir respostas e criar suas próprias baterias. Roda no seu computador, com Python e navegador, sem dependências de terceiros ou APIs pagas.
 
+## De onde vem o projeto
+
+Sou Antonio, da AD3. Uso IA no meu negócio local e na minha agência de IA. É dessa rotina — atendimento, vendas, marketing e operação — que nasce o NegócioBench.
+
+Quero entender quais modelos locais ajudam no trabalho de verdade, dentro das condições do meu computador. Abri o projeto para que outros empreendedores e alunos possam fazer a mesma investigação: criar testes com o contexto do próprio negócio e conferir as respostas, o tempo e as limitações de cada modelo.
+
+Os casos públicos usam dados fictícios inspirados nesses tipos de tarefa. Resultados de desempenho só entram depois de uma execução; a experiência na operação não substitui a medição.
+
 ![Interface do NegócioBench](docs/interface.png)
 
 ## Começar
@@ -47,6 +55,16 @@ Fontes do protocolo: [Ollama](https://docs.ollama.com/api/openai-compatibility),
 - Importação/exportação de baterias próprias e exportação de relatórios JSON.
 
 Não há ranking público pré-preenchido. Nenhum modelo foi avaliado para produzir números de marketing. Os resultados começam vazios.
+
+## RAG: onde entram PostgreSQL e pgvector?
+
+**O RAG desta versão usa BM25, uma busca por palavras nos documentos da bateria.** Ele funciona localmente, sem banco de dados ou modelo de embeddings.
+
+Para quem estuda ou usa RAG com PostgreSQL, vale conhecer o **[pgvector](https://github.com/pgvector/pgvector)**: uma extensão que permite guardar vetores e pesquisar por proximidade dentro do próprio Postgres. Um modelo de embeddings transforma os textos em vetores; a busca seleciona trechos que serão entregues ao modelo que responde.
+
+RAG é o fluxo de recuperar conhecimento e usá-lo na resposta. A recuperação pode ser lexical, vetorial ou uma combinação das duas. **PostgreSQL + pgvector ainda não está integrado ao NegócioBench.** Os testes atuais não medem o desempenho desse banco nem reproduzem uma aplicação do curso que o utilize.
+
+**[Entenda o fluxo e como relacioná-lo aos seus testes](docs/RAG-E-PGVECTOR.md)**
 
 ## Crie os testes do seu negócio
 
