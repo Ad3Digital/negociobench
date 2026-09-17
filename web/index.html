@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0b1010">
+  <meta name="description" content="Descubra qual IA local funciona no seu computador e no seu negócio. Benchmark aberto, casos próprios e atendimento com RAG.">
+  <title>NegócioBench — por AD3</title>
+  <link rel="icon" href="/logo.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/style.css">
+  <script src="/app.js" defer></script>
+</head>
+<body>
+  <a class="skip" href="#main">Ir para o conteúdo</a>
+  <aside class="sidebar">
+    <a class="brand" href="#overview"><img src="/logo.svg" width="36" height="36" alt=""><span>Negócio<span class="brand-light">Bench</span><small>POR AD3</small></span></a>
+    <div class="nav-label">SEU LABORATÓRIO</div>
+    <nav aria-label="Navegação principal">
+      <a href="#overview" data-page="overview"><span data-icon="grid"></span>Visão geral</a>
+      <a href="#cases" data-page="cases"><span data-icon="layers"></span>Explorar desafios<span class="nav-count" id="nav-count">30</span></a>
+      <a href="#business" data-page="business"><span data-icon="store"></span>Meu negócio<span class="tiny-dot"></span></a>
+      <a href="#method" data-page="method"><span data-icon="book"></span>Como funciona</a>
+    </nav>
+    <div class="sidebar-bottom">
+      <div class="local-card"><span class="status-dot"></span><b>O seu PC é o laboratório.</b><p>Modelos locais. Seus cenários.<br>Critérios que você pode conferir.</p><span class="mono">LOCAL FIRST / OPEN SOURCE</span></div>
+      <a class="github" href="https://github.com/Ad3Digital/negociobench" target="_blank" rel="noreferrer"><span data-icon="github"></span>Código no GitHub<span>↗</span></a>
+      <div class="sidebar-version">Feito para quem faz acontecer.<span id="version">v0.1.0</span></div>
+    </div>
+  </aside>
+  <div class="workspace">
+    <header class="topbar"><div class="breadcrumb">LABORATÓRIO LOCAL <span>/</span> <b id="page-label">VISÃO GERAL</b></div><div class="top-actions"><span class="local-pill"><span class="status-dot"></span>Sem API paga</span><button class="button small primary" data-action="new-run"><span data-icon="plus"></span>Novo teste</button></div></header>
+    <main id="main" tabindex="-1"><div id="page"><div class="loading">Preparando o laboratório…</div></div></main>
+    <footer>NegócioBench <span>Inteligência útil. Evidência aberta.</span><span>Seus resultados ficam neste computador.</span></footer>
+  </div>
+  <dialog id="run-dialog" aria-labelledby="run-title">
+    <div class="dialog-head"><div><span class="eyebrow">DO SEU JEITO</span><h2 id="run-title">Vamos testar uma IA local.</h2></div><button class="icon-button" data-action="close" aria-label="Fechar">×</button></div>
+    <form id="run-form">
+      <div class="form-grid"><label>Onde o modelo está rodando?<select name="runtime" id="runtime"><option value="ollama">Ollama</option><option value="lmstudio">LM Studio</option><option value="llamacpp">llama.cpp</option></select></label><label>Endereço do servidor<input name="endpoint" id="endpoint" value="http://127.0.0.1:11434/v1" required spellcheck="false"></label></div>
+      <div class="connection-row"><button type="button" class="button secondary" data-action="discover"><span data-icon="link"></span>Buscar modelos</button><span id="connection-status" role="status">Abra o servidor local antes de conectar.</span></div>
+      <fieldset class="models-field"><legend>Modelos para comparar</legend><div id="model-list" class="model-list"><p class="muted">Os modelos disponíveis vão aparecer aqui.</p></div></fieldset>
+      <div class="form-grid"><label>Bateria<select name="profile" id="profile"></select></label><label>Repetições por caso<select name="repeats"><option value="1">1 · primeira exploração</option><option value="3">3 · comparação mais consistente</option><option value="5">5 · mais evidências</option></select></label></div>
+      <label>Seu hardware e a configuração do modelo<input name="hardware" placeholder="Ex.: RTX 3060 12 GB · 32 GB RAM · Q4_K_M · contexto 8K" maxlength="300"><small>Ajuda a interpretar velocidade. Registre quantização e contexto para comparar depois.</small></label>
+      <details class="advanced"><summary>Ajustes da execução</summary><div class="form-grid three"><label>Temperatura<input type="number" name="temperature" min="0" max="2" step="0.1" value="0"></label><label>Limite de saída (tokens)<input type="number" name="max_tokens" min="128" max="8192" value="2048"></label><label>Tempo máximo por caso (s)<input type="number" name="timeout" min="10" max="600" value="180"></label></div></details>
+      <p class="notice">A execução usa o seu hardware e pode carregar os modelos em sequência. Os testes começam apenas ao clicar abaixo.</p>
+      <p id="run-error" class="error-text" role="alert"></p>
+      <div class="dialog-foot"><span id="run-size" class="muted"></span><button type="submit" id="start-button" class="button primary"><span data-icon="play"></span>Iniciar benchmark</button></div>
+    </form>
+  </dialog>
+  <dialog id="detail-dialog" class="wide-dialog" aria-labelledby="detail-title"><div id="detail-content"></div></dialog>
+  <div id="toast" role="status" aria-live="polite"></div>
+</body>
+</html>

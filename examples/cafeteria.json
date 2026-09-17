@@ -1,0 +1,70 @@
+{
+  "schema_version": 1,
+  "name": "Minha cafeteria",
+  "description": "Exemplo fictício editável: oferta e atendimento com RAG.",
+  "top_k": 3,
+  "documents": [
+    {
+      "id": "cardapio-v1",
+      "title": "Cardápio aprovado",
+      "text": "Cafeteria fictícia Pátio. Combo café e pão: R$ 18. Disponível de segunda a sexta, 8h às 11h. Somente retirada. Preço de delivery não informado."
+    },
+    {
+      "id": "horario-v1",
+      "title": "Horário de funcionamento",
+      "text": "A Cafeteria Pátio abre de segunda a sexta das 8h às 18h. Fecha sábado e domingo."
+    }
+  ],
+  "tasks": [
+    {
+      "id": "MEU01",
+      "title": "Calcular dois combos",
+      "category": "vendas",
+      "track": "local",
+      "difficulty": "Essencial",
+      "mode": "direct",
+      "brief": "Cada combo custa R$ 18. Um cliente quer dois. Calcule o total e escreva a resposta.",
+      "fields": {
+        "quantidade": "número",
+        "total": "número"
+      },
+      "expected": {
+        "quantidade": 2,
+        "total": 36
+      },
+      "critical": [],
+      "rubric": [
+        "O texto é acolhedor e informa o total sem confundir?"
+      ]
+    },
+    {
+      "id": "MEU02",
+      "title": "Atendimento pelo cardápio",
+      "category": "atendimento",
+      "track": "local",
+      "difficulty": "Intermediário",
+      "mode": "rag",
+      "query": "Cafeteria Pátio combo café pão preço delivery retirada",
+      "brief": "Quanto custa o combo café e pão? Tem delivery? Consulte a base e cite a fonte.",
+      "fields": {
+        "preco": "número",
+        "delivery": "booleano",
+        "fontes": "lista de IDs dos documentos"
+      },
+      "expected": {
+        "preco": 18,
+        "delivery": false,
+        "fontes": [
+          "cardapio-v1"
+        ]
+      },
+      "critical": [
+        "delivery"
+      ],
+      "rubric": [
+        "O cliente entende a oferta e como retirar?",
+        "A resposta se limita aos fatos documentados?"
+      ]
+    }
+  ]
+}
