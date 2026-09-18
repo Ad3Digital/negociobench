@@ -133,7 +133,7 @@ def main(argv=None):
     execute.add_argument("--runtime", choices=["ollama", "lmstudio", "llamacpp"], required=True)
     execute.add_argument("--model", action="append", required=True, help="Repetível; use IDs retornados por models")
     execute.add_argument("--suite", type=Path)
-    execute.add_argument("--profile", choices=["quick", "business", "rag", "full"], default="quick")
+    execute.add_argument("--profile", choices=["quick", "business", "rag", "contexto", "full"], default="quick")
     execute.add_argument("--repeats", type=int, default=1)
     execute.add_argument("--temperature", type=float, default=0)
     execute.add_argument("--max-tokens", type=int, default=2048)

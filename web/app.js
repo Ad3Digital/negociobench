@@ -56,7 +56,7 @@ function renderPage() {
   $('#page').innerHTML = ({overview:overview, cases:casesPage, business:businessPage, method:methodPage}[page])();
 }
 const catName = id => state.categories.find(c => c.id === id)?.name || id;
-const labelProfile = id => ({quick:'Exploração rápida', business:'Negócios',rag:'Atendimento com RAG',full:'Bateria completa'}[id] || id);
+const labelProfile = id => ({quick:'Exploração rápida', business:'Negócios',rag:'Atendimento com RAG',contexto:'Documento longo',full:'Bateria completa'}[id] || id);
 const statusLabel = id => ({completed:'Concluído',running:'Em andamento',cancelled:'Cancelado',interrupted:'Interrompido'}[id] || id);
 const date = value => new Date(value).toLocaleString('pt-BR', {dateStyle:'short',timeStyle:'short'});
 

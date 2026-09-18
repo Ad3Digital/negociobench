@@ -29,8 +29,11 @@ from suites import BUILTIN, EXAMPLE, validate_suite
 ROOT = Path(__file__).resolve().parent
 TASKS = CASES + RAG_CASES
 BY_ID = {t["id"]: t for t in TASKS}
+# Um briefing longo carrega um documento colado; o perfil "contexto" isola esses casos.
+LONG_BRIEF = 2000
 PROFILES = {"quick": ["AT01", "VE01", "MA02", "AN03", "OP01", "CO01"],
             "business": [t["id"] for t in CASES], "rag": [t["id"] for t in RAG_CASES],
+            "contexto": [t["id"] for t in TASKS if len(t["brief"]) >= LONG_BRIEF],
             "full": [t["id"] for t in TASKS]}
 
 
@@ -50,7 +53,9 @@ def configure_suite(suite):
     BY_ID = {t["id"]: t for t in TASKS}
     quick = [next((t["id"] for t in TASKS if t["category"] == c["id"]), None) for c in CATEGORIES]
     PROFILES = {"quick": [cid for cid in quick if cid], "business": [t["id"] for t in TASKS if t["mode"] != "rag"],
-                "rag": [t["id"] for t in TASKS if t["mode"] == "rag"], "full": [t["id"] for t in TASKS]}
+                "rag": [t["id"] for t in TASKS if t["mode"] == "rag"],
+                "contexto": [t["id"] for t in TASKS if len(t["brief"]) >= LONG_BRIEF],
+                "full": [t["id"] for t in TASKS]}
     SUITE_HASH = digest({"suite": CURRENT_SUITE, "system": SYSTEM, "version": VERSION,
                          "retriever": "bm25-v1", "scorer": "exact-fields-v1"})
 

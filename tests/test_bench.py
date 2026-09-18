@@ -130,7 +130,7 @@ class AppTests(unittest.TestCase):
             return json.load(response)
 
     def test_http_origin_token_and_static_boundary(self):
-        self.assertEqual(len(self.request('/api/state')["tasks"]), 30)
+        self.assertEqual(len(self.request('/api/state')["tasks"]), len(bench.TASKS))
         for headers in ({"X-Bench-Token": "wrong"}, {"Origin": "https://example.invalid"}, {"Host": "evil.invalid"}):
             with self.subTest(headers=headers), self.assertRaises(urllib.error.HTTPError) as cm:
                 self.request('/api/cancel', {}, headers)

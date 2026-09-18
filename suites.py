@@ -5,7 +5,7 @@ import math
 from cases import CASES, CATEGORIES, VERSION
 from knowledge import DOCUMENTS, RAG_CASES
 
-BUILTIN = {"schema_version": 1, "name": "Negócios locais & digitais", "description": "30 desafios sintéticos criados pela AD3.",
+BUILTIN = {"schema_version": 1, "name": "Negócios locais & digitais", "description": "35 desafios sintéticos criados pela AD3.",
            "top_k": 4, "documents": DOCUMENTS, "tasks": CASES + RAG_CASES}
 
 EXAMPLE = {
