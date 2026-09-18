@@ -51,9 +51,17 @@ class ContractTests(unittest.TestCase):
     def test_all_gold_and_rag_sources(self):
         for task in bench.TASKS:
             with self.subTest(task=task["id"]):
-                self.assertEqual(bench.evaluate(task, bench.dump({**task["expected"], "resposta": "Controle."}))["score"], 100)
+                self.assertEqual(bench.evaluate(task, bench.dump(bench.control_answer(task)))["score"], 100)
                 messages, sources = bench.task_messages(task)
-                self.assertNotIn('"expected"', messages[1]["content"])
+                conteudo = messages[1]["content"]
+                # Caso com imagem manda conteúdo em partes; o gabarito não pode vazar em nenhuma.
+                partes = conteudo if isinstance(conteudo, list) else [{"type": "text", "text": conteudo}]
+                for parte in partes:
+                    self.assertNotIn('"expected"', parte.get("text", ""))
+                if task.get("image"):
+                    urls = [p["image_url"]["url"] for p in partes if p["type"] == "image_url"]
+                    self.assertEqual(len(urls), 1)
+                    self.assertTrue(urls[0].startswith("data:image/png;base64,"))
                 if task.get("mode") == "rag":
                     self.assertLessEqual(set(task["expected"]["fontes"]), {d["id"] for d in sources})
         hostile = bench.task_messages(bench.BY_ID["RA06"])[1]
@@ -130,7 +138,7 @@ class AppTests(unittest.TestCase):
             return json.load(response)
 
     def test_http_origin_token_and_static_boundary(self):
-        self.assertEqual(len(self.request('/api/state')["tasks"]), 30)
+        self.assertEqual(len(self.request('/api/state')["tasks"]), len(bench.TASKS))
         for headers in ({"X-Bench-Token": "wrong"}, {"Origin": "https://example.invalid"}, {"Host": "evil.invalid"}):
             with self.subTest(headers=headers), self.assertRaises(urllib.error.HTTPError) as cm:
                 self.request('/api/cancel', {}, headers)

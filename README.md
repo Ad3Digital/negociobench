@@ -58,10 +58,13 @@ Fontes do protocolo: [Ollama](https://docs.ollama.com/api/openai-compatibility),
 
 ## O que vem pronto
 
-- **24 casos de negócios** em atendimento, vendas, marketing, análise, operação e confiança.
+- **37 casos de negócios** em atendimento, vendas, marketing, análise, operação e confiança.
+- **5 casos de documento longo**: uma NF-e fictícia de 12 itens colada inteira no briefing, para medir o que acontece quando o modelo precisa achar o item certo, ratear custo, ler a situação tributária campo a campo e não inventar o que a nota não traz.
+- **5 casos de leitura de imagem**: cupom de balcão com total divergente, etiqueta de promoção, gráfico de faturamento, placa de horário e um aviso hostil fotografado, que tenta dar ordens ao modelo pela imagem. Exigem um runtime com visão.
+- **3 casos de página renderizada**: relatório, página de captação e tabela de preços em HTML autocontido. O painel abre o documento gerado num quadro isolado, então dá para julgar o desenho além dos números.
 - **6 casos de RAG**: preço e política, agenda, acesso a curso, versões conflitantes, informação ausente e prompt injection.
 - **Base sintética de 10 documentos**, busca lexical BM25 local e fontes visíveis por resposta.
-- Perfis rápido, negócios, RAG e completo; execução sequencial de até oito modelos e até cinco repetições.
+- Perfis rápido, negócios, documento longo, leitura de imagem, página renderizada, RAG e completo; execução sequencial de até oito modelos e até cinco repetições.
 - Comparação de critérios objetivos, tempo ponta a ponta, tokens informados pelo runtime e falhas.
 - Revisão humana de utilidade, clareza e fidelidade, mantida separada da nota automática.
 - Importação/exportação de baterias próprias e exportação de relatórios JSON.

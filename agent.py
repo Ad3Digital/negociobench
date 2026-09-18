@@ -33,7 +33,7 @@ def validate():
         _, sources = bench.task_messages(task)
         found = {d["id"] for d in sources}
         missing = sorted(set(task["expected"].get("fontes", [])) - found) if task.get("mode") == "rag" else []
-        score = bench.evaluate(task, bench.dump({**task["expected"], "resposta": "Controle de formato."}))["score"]
+        score = bench.evaluate(task, bench.dump(bench.control_answer(task)))["score"]
         cases.append({"id": task["id"], "ok": score == 100 and not missing, "missing_sources": missing,
                       "retrieved_ids": [d["id"] for d in sources]})
     return {"ok": all(c["ok"] for c in cases), "suite": bench.CURRENT_SUITE["name"], "suite_hash": bench.SUITE_HASH,
@@ -133,7 +133,7 @@ def main(argv=None):
     execute.add_argument("--runtime", choices=["ollama", "lmstudio", "llamacpp"], required=True)
     execute.add_argument("--model", action="append", required=True, help="Repetível; use IDs retornados por models")
     execute.add_argument("--suite", type=Path)
-    execute.add_argument("--profile", choices=["quick", "business", "rag", "full"], default="quick")
+    execute.add_argument("--profile", choices=["quick", "business", "rag", "contexto", "visao", "pagina", "full"], default="quick")
     execute.add_argument("--repeats", type=int, default=1)
     execute.add_argument("--temperature", type=float, default=0)
     execute.add_argument("--max-tokens", type=int, default=2048)
