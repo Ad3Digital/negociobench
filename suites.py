@@ -1,12 +1,14 @@
 """Declarative suites: JSON data only. Imported files never execute code."""
 
-import re
+import base64
+import binascii
 import math
-from cases import CASES, CATEGORIES, VERSION
+import re
+from cases import CASES, CATEGORIES, IMAGES, VERSION
 from knowledge import DOCUMENTS, RAG_CASES
 
-BUILTIN = {"schema_version": 1, "name": "Negócios locais & digitais", "description": "35 desafios sintéticos criados pela AD3.",
-           "top_k": 4, "documents": DOCUMENTS, "tasks": CASES + RAG_CASES}
+BUILTIN = {"schema_version": 1, "name": "Negócios locais & digitais", "description": "43 desafios sintéticos criados pela AD3.",
+           "top_k": 4, "documents": DOCUMENTS, "images": IMAGES, "tasks": CASES + RAG_CASES}
 
 EXAMPLE = {
     "schema_version": 1,
@@ -49,6 +51,29 @@ def scalar(value):
     return value is None or type(value) in (str, bool, int) or (type(value) is float and math.isfinite(value))
 
 
+# Uma imagem chega em base64 e so e aceita como PNG: o prompt multimodal carrega
+# o proprio dado, entao a bateria nunca aponta para arquivo fora dela.
+PNG = base64.b64decode("iVBORw0KGgo=")
+
+
+def imagens(data):
+    if not isinstance(data, dict) or len(data) > 20:
+        raise ValueError("Use até 20 imagens na bateria")
+    saida = {}
+    for chave, valor in data.items():
+        nome = identifier(chave, "ID da imagem")
+        if not isinstance(valor, str) or len(valor) > 1_400_000:
+            raise ValueError(f"{nome}: imagem em base64, máximo 1 MB por arquivo")
+        try:
+            bruto = base64.b64decode(valor, validate=True)
+        except (ValueError, binascii.Error) as exc:
+            raise ValueError(f"{nome}: base64 inválido") from exc
+        if not bruto.startswith(PNG):
+            raise ValueError(f"{nome}: somente PNG é aceito")
+        saida[nome] = valor
+    return saida
+
+
 def validate_suite(data):
     if not isinstance(data, dict) or data.get("schema_version") != 1:
         raise ValueError("A bateria precisa de schema_version: 1")
@@ -58,6 +83,7 @@ def validate_suite(data):
     if type(top_k) is not int or not 1 <= top_k <= 10:
         raise ValueError("top_k deve ser inteiro entre 1 e 10")
     result["top_k"] = top_k
+    result["images"] = imagens(data.get("images", {}))
     docs = data.get("documents", [])
     tasks = data.get("tasks")
     if not isinstance(docs, list) or len(docs) > 100:
@@ -113,6 +139,19 @@ def validate_suite(data):
                "difficulty": text(task.get("difficulty", "Personalizado"), "Dificuldade", 40), "mode": mode,
                "brief": text(task.get("brief"), "Briefing"), "fields": fields, "expected": expected,
                "critical": critical, "rubric": [text(r, "Rubrica", 500) for r in rubric]}
+        imagem = task.get("image")
+        if imagem is not None:
+            imagem = identifier(imagem, "Imagem do caso")
+            if imagem not in result["images"]:
+                raise ValueError(f"{cid}: imagem {imagem} não existe nesta bateria")
+            row["image"] = imagem
+        render = task.get("render")
+        if render is not None:
+            if render != "html":
+                raise ValueError(f"{cid}: render aceita apenas \"html\"")
+            if "html" not in fields:
+                raise ValueError(f"{cid}: render html exige um campo \"html\" no gabarito")
+            row["render"] = render
         if mode == "rag":
             row["query"] = text(task.get("query"), "Consulta RAG", 1000)
             if not docs or not isinstance(expected.get("fontes"), list) or any(f not in ids for f in expected["fontes"]):
